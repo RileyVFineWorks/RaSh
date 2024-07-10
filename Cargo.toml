@@ -1,0 +1,11 @@
+[package]
+name = "rash"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rustyline = "9.1.2"
+
+[[bin]]
+name = "rash"
+path = "src/main.rs"
