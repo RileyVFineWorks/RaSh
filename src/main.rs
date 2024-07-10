@@ -1,5 +1,6 @@
 use rustyline::error::ReadlineError;
 use std::env;
+use std::process::Command;
 
 mod commands;
 
@@ -24,6 +25,17 @@ fn main() -> rustyline::Result<()> {
                     }
                     "nano" => {
                         commands::open_file("nano", &args);
+                    }
+                    "ls" => {
+                        let output = Command::new("ls")
+                            .args(&args)
+                            .output()
+                            .unwrap_or_else(|_| panic!("Failed to execute command: ls"));
+                        println!("{}", String::from_utf8_lossy(&output.stdout));
+                    }
+                    "pwd" => {
+                        let current_dir = env::current_dir().unwrap();
+                        println!("{}", current_dir.display());
                     }
                     "exit" => {
                         println!("Exiting the shell...");
