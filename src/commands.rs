@@ -1,5 +1,5 @@
 use std::env;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::process::Command;
 
 pub fn cd(args: &[&str]) {
@@ -33,17 +33,18 @@ pub fn open_file(command: &str, args: &[&str]) {
 }
 
 pub fn execute_command(command: &str, args: &[&str]) {
-    let mut command_path = PathBuf::from("/usr/bin");
-    command_path.push(command);
-
-    if command_path.exists() {
-        let output = Command::new(command)
-            .args(args)
-            .output()
-            .unwrap_or_else(|_| panic!("Failed to execute command: {}", command));
-
-        println!("{}", String::from_utf8_lossy(&output.stdout));
-    } else {
-        eprintln!("{}: command not found", command);
+    if let Ok(path) = env::var("PATH") {
+        for dir in path.split(':') {
+            let command_path = Path::new(dir).join(command);
+            if command_path.exists() {
+                let output = Command::new(command)
+                    .args(args)
+                    .output()
+                    .unwrap_or_else(|_| panic!("Failed to execute command: {}", command));
+                println!("{}", String::from_utf8_lossy(&output.stdout));
+                return;
+            }
+        }
     }
+    eprintln!("{}: command not found", command);
 }
