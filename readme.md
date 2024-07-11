@@ -30,7 +30,7 @@ family = "Fira Code"
 style = "Regular"
 
 [shell]
-program = 'C:\Users\Users\RashUser\.cargo\bin\rash.exe -c "cd; exec rash"'
+program = 'C:\Users\RashUser\.cargo\bin\rash.exe -c "cd; exec rash"'
 
 [window]
 opacity = 0.95
