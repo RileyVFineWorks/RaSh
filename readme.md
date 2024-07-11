@@ -3,8 +3,6 @@
 - its like bash or fish or zsh but rash
 - as of now has basic bash commands (cd/cat/ls/pwd/etc) and can also be used for text editor of choice
 
-## Quick Install
-
 ## Installation
 1. Make sure you have Rust and Cargo installed. If not, install them from https://rustup.rs/
 2. Clone this repository: https://github.com/RileyVFineWorks/RaSh.git
@@ -15,7 +13,7 @@
 ## Usage
 After installation, you can start the shell from anywhere by running: rash
 
-# Optional setup for default shell
+## Optional setup for default shell
 1. This repo also contains the shell script to set this as your default shell in your terminal emulator of choice
 2. running `chmod _x optional.sh` will create the .exe that users can then move into their desired path
 3. In the shell section of your terminal emulator feel free to pass in the .exe
