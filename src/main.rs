@@ -1,67 +1,49 @@
 use rustyline::error::ReadlineError;
 use std::env;
-use std::process::Command;
+use std::error::Error;
 
+mod command;
 mod commands;
+mod shell;
 
-fn main() -> rustyline::Result<()> {
+use shell::Shell;
+
+fn main() -> Result<(), Box<dyn Error>> {
     let mut rl = rustyline::DefaultEditor::new()?;
+    let shell = Shell::new();
+
+    // Load command history
+    if rl.load_history("history.txt").is_err() {
+        println!("No previous history.");
+    }
+
     loop {
-        let current_dir = env::current_dir().unwrap();
+        let current_dir = env::current_dir()?;
         let prompt = format!("{} $ ", current_dir.display());
 
         match rl.readline(&prompt) {
             Ok(line) => {
+                rl.add_history_entry(line.as_str());
+
                 let mut parts = line.trim().split_whitespace();
                 let command = parts.next().unwrap_or("");
-                let args: Vec<&str> = parts.collect();
+                let args: Vec<String> = parts.map(String::from).collect();
 
-                match command {
-                    "cd" => {
-                        commands::cd(&args);
-                    }
-                    "vim" => {
-                        commands::open_file("vim", &args);
-                    }
-                    "nano" => {
-                        commands::open_file("nano", &args);
-                    }
-                    "ls" => {
-                        let output = Command::new("ls")
-                            .args(&args)
-                            .output()
-                            .unwrap_or_else(|_| panic!("Failed to execute command: ls"));
-                        println!("{}", String::from_utf8_lossy(&output.stdout));
-                    }
-                    "pwd" => {
-                        let current_dir = env::current_dir().unwrap();
-                        println!("{}", current_dir.display());
-                    }
-                    "cat" => {
-                        let output = Command::new("cat")
-                            .args(&args)
-                            .output()
-                            .unwrap_or_else(|_| panic!("Failed to execute command: cat"));
-                        println!("{}", String::from_utf8_lossy(&output.stdout));
-                    }
-                    "exit" => {
-                        println!("Exiting the shell...");
-                        break;
-                    }
-                    "" => {
-                        // Empty command, do nothing
-                    }
-                    _ => {
-                        commands::execute_command(command, &args);
-                    }
+                if command == "exit" {
+                    println!("Exiting the shell...");
+                    break;
+                }
+
+                if let Err(e) = shell.execute_command(command, &args) {
+                    eprintln!("Error: {}", e);
                 }
             }
             Err(ReadlineError::Interrupted) => {
-                println!("Interrupted. Exiting the shell...");
+                println!("CTRL-C");
                 break;
             }
             Err(ReadlineError::Eof) => {
-                println!("Exiting the shell...");
+                println!("CTRL-D");
                 break;
             }
             Err(err) => {
@@ -70,6 +52,9 @@ fn main() -> rustyline::Result<()> {
             }
         }
     }
+
+    // Save command history
+    rl.save_history("history.txt")?;
 
     Ok(())
 }
