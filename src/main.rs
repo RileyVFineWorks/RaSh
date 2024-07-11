@@ -37,6 +37,13 @@ fn main() -> rustyline::Result<()> {
                         let current_dir = env::current_dir().unwrap();
                         println!("{}", current_dir.display());
                     }
+                    "cat" => {
+                        let output = Command::new("cat")
+                            .args(&args)
+                            .output()
+                            .unwrap_or_else(|_| panic!("Failed to execute command: cat"));
+                        println!("{}", String::from_utf8_lossy(&output.stdout));
+                    }
                     "exit" => {
                         println!("Exiting the shell...");
                         break;
