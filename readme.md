@@ -5,13 +5,6 @@
 
 ## Quick Install
 
-```bash
-cargo install --git https://github.com/yourusername/your_shell.git## Installation
-1. Make sure you have Rust and Cargo installed. If not, install them from https://rustup.rs/
-2. Clone this repository:
-3. Navigate to the project directory:
-4. Install the shell:
-
 ## Installation
 1. Make sure you have Rust and Cargo installed. If not, install them from https://rustup.rs/
 2. Clone this repository: https://github.com/RileyVFineWorks/RaSh.git
@@ -27,6 +20,7 @@ After installation, you can start the shell from anywhere by running: rash
 2. running `chmod _x optional.sh` will create the .exe that users can then move into their desired path
 3. In the shell section of your terminal emulator feel free to pass in the .exe
 4. Example from my alacritty config :
+
 ```toml
 [font]
 size = 14
